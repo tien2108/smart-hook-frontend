@@ -36,16 +36,16 @@ export function AuthProvider({ children }) {
     }
 
     const { token, user } = await res.json()
-    localStorage.setItem('token', token) // 👈 persist token
+    localStorage.setItem('token', token) 
     setUser(user)
     return user
   }
 
-  const register = async (email, password, name) => {
+  const register = async (email, password, name, home_address, work_address) => {
     const res = await fetch(`${API}/auth/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password, name })
+      body: JSON.stringify({ email, password, name, home_address, work_address })
     })
 
     if (!res.ok) {
@@ -62,6 +62,7 @@ export function AuthProvider({ children }) {
   const logout = () => {
     localStorage.removeItem('token')
     setUser(null)
+    console.log('log out')
   }
 
   return (
