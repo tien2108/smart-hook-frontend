@@ -1,23 +1,79 @@
-import { Save, MapPin, Clock, Bell, Star } from 'lucide-react';
-import { useState } from 'react';
+import { Save, MapPin, Clock, Bell, Star, Trash } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { apiFetch } from '../lib/api';
 
 export default function Profile() {
-	const [homeAddress, setHomeAddress] = useState(
-		'123 Main Street, Seattle, WA 98101',
-	);
-	const [destinationAddress, setDestinationAddress] = useState(
-		'University of Washington, Seattle, WA 98195',
-	);
-	const [departureTime, setDepartureTime] = useState('08:15');
+	const [password, setPassword] = useState('');
+	const [name, setName] = useState('');
+	const [homeAddress, setHomeAddress] = useState('');
+	const [destinationAddress, setDestinationAddress] = useState('');
 	const [travelMode, setTravelMode] = useState('bus');
+	const [departureTime, setDepartureTime] = useState('08:15');
 	const [journeyNotifications, setJourneyNotifications] = useState(true);
 	const [weatherAlerts, setWeatherAlerts] = useState(true);
 	const [meteorAlerts, setMeteorAlerts] = useState(true);
 	const [auroraAlerts, setAuroraAlerts] = useState(true);
+	const [loading, setLoading] = useState(true);
 
-	const handleSave = () => {
-		// Save logic here
-		alert('Profile updated successfully!');
+	const navigate = useNavigate();
+
+	useEffect(() => {
+		const fetchProfile = async () => {
+			const res = await apiFetch('/user');
+			const user = await res.json();
+			setName(user.name);
+			setHomeAddress(user.home_address);
+			setDestinationAddress(user.dest_address);
+		};
+
+		fetchProfile();
+		setLoading(false);
+	}, [loading]);
+
+	const handleSave = async () => {
+		try {
+			console.log('Update profile');
+			console.log(destinationAddress);
+			const res = await apiFetch('/user', {
+				method: 'POST',
+				body: JSON.stringify({
+					password,
+					name,
+					home_address: homeAddress,
+					work_address: destinationAddress,
+				}),
+			});
+
+			if (!res.ok) {
+				console.error('Failed to save user settings', res.status);
+				return;
+			}
+
+			console.log('User settings saved');
+			setLoading(true);
+		} catch (error) {
+			console.error('Error saving user settings', error);
+		}
+	};
+
+	const handleDelete = async () => {
+		console.log('Delete profile');
+		try {
+			const res = await apiFetch('/user', {
+				method: 'DELETE',
+			});
+
+			if (!res.ok) {
+				console.error('Failed to delete user', res.status);
+				return;
+			}
+
+			console.log('User deleted');
+			navigate('/login')
+		} catch (error) {
+			console.error('Error deleting user', error);
+		}
 	};
 
 	return (
@@ -25,12 +81,47 @@ export default function Profile() {
 			<div className="mb-8">
 				<h1 className="text-3xl font-bold text-gray-900 mb-2">User Profile</h1>
 				<p className="text-gray-600">
-					Manage your addresses, journey preferences, and notifications
+					Manage your account, addresses, journey preferences, and notifications
 				</p>
 			</div>
-
 			<div className="space-y-6">
-				{/* Address Settings */}
+				{/* Account Settings */}
+				<div className="bg-white rounded-xl p-6 shadow-md">
+					<div className="flex items-center gap-2 mb-4">
+						<h2 className="text-xl font-semibold text-gray-900">
+							Account Settings
+						</h2>
+					</div>
+
+					<div className="space-y-4">
+						<div>
+							<label className="block text-sm font-medium text-gray-700 mb-2">
+								Name
+							</label>
+							<input
+								type="text"
+								value={name}
+								onChange={(e) => setName(e.target.value)}
+								className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+								placeholder="Enter your name"
+							/>
+						</div>
+
+						<div>
+							<label className="block text-sm font-medium text-gray-700 mb-2">
+								New Password
+							</label>
+							<input
+								type="text"
+								value={password}
+								onChange={(e) => setPassword(e.target.value)}
+								className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+								placeholder="Enter a new password"
+							/>
+						</div>
+					</div>
+				</div>
+
 				<div className="bg-white rounded-xl p-6 shadow-md">
 					<div className="flex items-center gap-2 mb-4">
 						<MapPin className="w-5 h-5 text-blue-600" />
@@ -176,7 +267,6 @@ export default function Profile() {
 					</div>
 
 					<div className="space-y-4">
-
 						<div className="flex items-center justify-between p-4 bg-purple-50 rounded-lg">
 							<div>
 								<p className="font-medium text-gray-900">
@@ -200,7 +290,13 @@ export default function Profile() {
 				</div>
 
 				{/* Save Button */}
-				<div className="flex justify-end">
+				<div className="flex justify-between">
+					<button
+						onClick={handleDelete}
+						className="flex items-center gap-2 bg-red-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-red-700 transition-colors shadow-md">
+						<Trash className="w-5 h-5" />
+						Delete
+					</button>
 					<button
 						onClick={handleSave}
 						className="flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors shadow-md">

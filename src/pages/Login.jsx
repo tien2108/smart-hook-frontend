@@ -6,7 +6,7 @@ import { useNavigate, Link } from 'react-router-dom';
 export default function Login() {
 	const { login } = useAuth();
 	const navigate = useNavigate();
-	const [email, setEmail] = useState('');
+	const [username, setUsername] = useState('');
 	const [password, setPassword] = useState('');
 	const [error, setError] = useState('');
 	const [loading, setLoading] = useState(false);
@@ -17,7 +17,7 @@ export default function Login() {
 		setLoading(true);
 
 		try {
-			await login(email, password);
+			await login(username, password);
 			navigate('/');
 		} catch (err) {
 			setError(err.message);
@@ -33,10 +33,10 @@ export default function Login() {
 
 				<form onSubmit={handleSubmit} className="space-y-4">
 					<input
-						value={email}
-						onChange={(e) => setEmail(e.target.value)}
-						type="email"
-						placeholder="Email"
+						value={username}
+						onChange={(e) => setUsername(e.target.value)}
+						type="text"
+						placeholder="Email or Username"
 						required
 						className="w-full border p-2 rounded"
 					/>

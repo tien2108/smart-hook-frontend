@@ -22,20 +22,24 @@ export default function Devices() {
 	const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 	const [configDevice, setConfigDevice] = useState(null);
 
-	const handleAddDevice = async (name, uuid, location) => {
+	const handleAddDevice = async (name, uuid, deviceLocation) => {
 		const res = await apiFetch('/device/v1/add-device', {
 			method: 'POST',
-			body: JSON.stringify({ name, uuid, location }),
+			body: JSON.stringify({ name, uuid, deviceLocation }),
 		});
-		const newDevice = await res.json();
-		setDevices((prev) => [...prev, newDevice]);
-	};	
+		if (res.ok) {
+			const newDevice = await res.json();
+			setDevices((prev) => [...prev, newDevice]);
+		}
+	};
 
 	const handleRemoveDevice = async (id) => {
-		await apiFetch(`/device/v1/${id}`, {
+		const res = await apiFetch(`/device/v1/${id}`, {
 			method: 'DELETE',
 		});
-		setDevices((prev) => prev.filter((d) => d.id !== id));
+		if (res.ok) {
+			setDevices((prev) => prev.filter((d) => d.id !== id));
+		}
 	};
 
 	return (
@@ -122,9 +126,8 @@ export default function Devices() {
 			<ConfigurationPanel
 				isOpen={configDevice !== null}
 				onClose={() => setConfigDevice(null)}
-				device={configDevice|| {}}
+				device={configDevice || {}}
 			/>
 		</div>
 	);
 }
-

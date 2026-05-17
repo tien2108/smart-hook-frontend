@@ -19,7 +19,6 @@ export default function Overview() {
 		const fetchActivity = async () => {
 			const res = await apiFetch('/data/activity');
 			const data = await res.json();
-			console.log(data);
 			setRecentActivity(data);
 		};
 
@@ -70,7 +69,7 @@ export default function Overview() {
 			<div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
 				{/* Weather - Large */}
 				<div className="lg:col-span-1">
-					<WeatherDisplay />
+					<WeatherDisplay weather={weather} />
 				</div>
 
 				{/* Upcoming Journey */}

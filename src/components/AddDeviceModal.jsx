@@ -3,7 +3,8 @@ import { useState } from 'react';
 
 export default function AddDeviceModal({ isOpen, onClose, onAdd }) {
 	const [name, setName] = useState('');
-	const [location, setLocation] = useState('');
+	const [deviceLocation, setDeviceLocation] = useState('');
+	const [destLocation, setDestLocation] = useState('');
 	const [UUID, setUUID] = useState('');
 	const [step, setStep] = useState(1);
 
@@ -11,10 +12,10 @@ export default function AddDeviceModal({ isOpen, onClose, onAdd }) {
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
-		if (name && location && UUID) {
-			onAdd(name, UUID, location);
+		if (name && deviceLocation && UUID) {
+			onAdd(name, UUID, deviceLocation);
 			setName('');
-			setLocation('');
+			setDeviceLocation('');
 			setUUID('');
 			setStep(1);
 			onClose();
@@ -65,12 +66,12 @@ export default function AddDeviceModal({ isOpen, onClose, onAdd }) {
 
 						<div>
 							<label className="block text-sm font-medium text-gray-700 mb-2">
-								Location
+								Device Location
 							</label>
 							<input
 								type="text"
-								value={location}
-								onChange={(e) => setLocation(e.target.value)}
+								value={deviceLocation}
+								onChange={(e) => setDeviceLocation(e.target.value)}
 								placeholder="e.g., Front Door"
 								className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
 								required

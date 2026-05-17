@@ -1,29 +1,12 @@
 import { Cloud, Droplets, Wind, Sun } from 'lucide-react';
-import { useState, useEffect } from 'react';
-import { apiFetch } from '../lib/api';
 
-export default function WeatherDisplay() {
+export default function WeatherDisplay({ weather }) {
 	const today = new Date().toLocaleDateString('en-GB', {
 		weekday: 'long',
 		day: 'numeric',
 		month: 'numeric',
 		year: 'numeric',
 	});
-
-	// Output: "Monday, 11/05/2026"
-
-	const [weather, setWeather] = useState({});
-
-	useEffect(() => {
-		// Simulate fetching weather data
-		const fetchWeather = async () => {
-			const res = await apiFetch('/data/weather');
-			const data = await res.json();
-			setWeather(data);
-		};
-
-		fetchWeather();
-	}, []);
 
 	return (
 		<div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl p-6 text-white shadow-xl">
