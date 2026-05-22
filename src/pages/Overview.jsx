@@ -23,14 +23,11 @@ export default function Overview() {
 		};
 
 		// Simulate fetching upcoming journey
-		const fetchJourney = () => {
-			setUpcomingJourney({
-				destination: 'Work',
-				departureTime: '8:15 AM',
-				mode: 'Bus',
-				busNumber: '42',
-				arrivalTime: '8:45 AM',
-			});
+		const fetchJourney = async () => {
+			// This will eventually come from the API, but for now we can hardcode it
+			const res = await apiFetch('/data/travel');
+			const data = await res.json();
+			setUpcomingJourney(data);
 		};
 
 		// Simulate fetching weather data
@@ -95,7 +92,7 @@ export default function Overview() {
 								<div>
 									<p className="text-sm text-gray-600">Leave by</p>
 									<p className="font-bold text-blue-600 text-xl">
-										{upcomingJourney.departureTime}
+										{upcomingJourney.leaveHouseAt}
 									</p>
 								</div>
 							</div>
@@ -104,19 +101,19 @@ export default function Overview() {
 								<div className="flex justify-between text-sm">
 									<span className="text-gray-600">Mode</span>
 									<span className="font-medium text-gray-900">
-										{upcomingJourney.mode}
+										{upcomingJourney.line}
 									</span>
 								</div>
 								<div className="flex justify-between text-sm">
 									<span className="text-gray-600">Bus #</span>
 									<span className="font-medium text-gray-900">
-										{upcomingJourney.busNumber}
+										{upcomingJourney.mode}
 									</span>
 								</div>
 								<div className="flex justify-between text-sm">
-									<span className="text-gray-600">Arrival</span>
+									<span className="text-gray-600">Duration</span>
 									<span className="font-medium text-gray-900">
-										{upcomingJourney.arrivalTime}
+										{upcomingJourney.durationMinutes} minutes
 									</span>
 								</div>
 							</div>
