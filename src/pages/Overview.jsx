@@ -92,7 +92,13 @@ export default function Overview() {
 								<div>
 									<p className="text-sm text-gray-600">Leave by</p>
 									<p className="font-bold text-blue-600 text-xl">
-										{upcomingJourney.leaveHouseAt}
+										{new Date(upcomingJourney.leaveHouseAt).toLocaleTimeString(
+											'fi-FI',
+											{
+												hour: '2-digit',
+												minute: '2-digit',
+											},
+										)}
 									</p>
 								</div>
 							</div>

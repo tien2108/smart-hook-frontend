@@ -20,6 +20,8 @@ export default function ConfigurationPanel({ isOpen, onClose, device }) {
 			}),
 		});
 		if (res.ok) {
+			setHomeAddress(homeAddress);
+			setWorkAddress(workAddress);
 			onClose();
 		}
 	};
