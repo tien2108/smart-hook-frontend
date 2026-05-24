@@ -37,84 +37,17 @@ export default function Profile() {
 	const handleSave = async () => {
 		try {
 			const updates = {
-				password,
-				name,
-				home_address: homeAddress,
-				work_address: destinationAddress,
-				travel_mode: travelMode,
-				departure_time: departureTime,
-				journey_notifications: journeyNotifications,
-			};
-			console.log('Saving user settings', updates);
-			const res = await apiFetch('/user', {
-				method: 'POST',
-				body: JSON.stringify(updates),
-			});
-		} catch (error) {
-			console.error('Error saving user settings', error);
-		}
-	};
-
-	const handleDelete = async () => {
-		console.log('Delete profile');
-		try {
-			const res = await apiFetch('/user', {
-				method: 'DELETE',
-			});
-
-			if (!res.ok) {
-				console.error('Failed to delete user', res.status);
-				return;
-			}
-
-			console.log('User deleted');
-			navigate('/login')
-		} catch (error) {
-			console.error('Error deleting user', error);
-		}
-	};
-
-	return (
-		<div className="max-w-4xl mx-auto px-6 py-8">
-			<div className="mb-8">
-				<h1 className="text-3xl font-bold text-gray-900 mb-2">User Profile</h1>
-				<p className="text-gray-600">
-					Manage your account, addresses, journey preferences, and notifications
-				</p>
-			</div>
-			<div className="space-y-6">
-				{/* Account Settings */}
-				<div className="bg-white rounded-xl p-6 shadow-md">
-					<div className="flex items-center gap-2 mb-4">
-						<h2 className="text-xl font-semibold text-gray-900">
-							Account Settings
-						</h2>
-					</div>
-
-					<div className="space-y-4">
-						<div>
-							<label className="block text-sm font-medium text-gray-700 mb-2">
-								Name
-							</label>
-							<input
-								type="text"
-								value={name}
-								onChange={(e) => setName(e.target.value)}
-								className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
-								placeholder="Enter your name"
-							/>
-						</div>
-
-						<div>
-							<label className="block text-sm font-medium text-gray-700 mb-2">
-							New Password
-						
+					password,
+					name,
 					home_address: homeAddress,
 					work_address: destinationAddress,
 					travel_mode: travelMode,
 					departure_time: departureTime,
 					journey_notifications: journeyNotifications,
-				}),
+				}
+			const res = await apiFetch('/user', {
+				method: 'POST',
+				body: updates,
 			});
 
 			if (!res.ok) {
