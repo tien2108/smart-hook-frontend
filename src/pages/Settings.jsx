@@ -27,8 +27,7 @@ export default function Profile() {
 			setDestinationAddress(user.dest_address);
 			setTravelMode(user.travel_mode);
 			setDepartureTime(user.departure_time);
-			setJourneyNotifications(user.journey_notifications);
-			setWeatherAlerts(user.weather_alerts);
+			setJourneyNotifications(!!user.journey_notifications);
 		};
 
 		fetchProfile();
