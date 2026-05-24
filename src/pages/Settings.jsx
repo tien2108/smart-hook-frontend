@@ -25,6 +25,9 @@ export default function Profile() {
 			setName(user.name);
 			setHomeAddress(user.home_address);
 			setDestinationAddress(user.dest_address);
+			setTravelMode(user.travel_mode);
+			setDepartureTime(user.departure_time);
+			setJourneyNotifications(user.journey_notifications);
 		};
 
 		fetchProfile();
@@ -42,6 +45,9 @@ export default function Profile() {
 					name,
 					home_address: homeAddress,
 					work_address: destinationAddress,
+					travel_mode: travelMode,
+					departure_time: departureTime,
+					journey_notifications: journeyNotifications,
 				}),
 			});
 
