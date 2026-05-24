@@ -7,7 +7,7 @@ import TransitDisplay from '../components/TransitDisplay';
 export default function Overview() {
 	// use API data for this in the future
 	const [recentActivity, setRecentActivity] = useState([]);
-
+	const [profile, setProfile] = useState({});
 	// use API data for this in the future
 	const [upcomingJourney, setUpcomingJourney] = useState({});
 
@@ -46,11 +46,17 @@ export default function Overview() {
 			).length;
 			setDeviceStats(activeDeviceNum);
 		};
+		const fetchProfile = async () => {
+			const res = await apiFetch('/auth/me');
+			const data = await res.json();
+			setProfile(data);
+		};
 
 		fetchDeviceStats();
 		fetchActivity();
 		fetchJourney();
 		fetchWeather();
+		fetchProfile();
 	}, []);
 
 	return (
@@ -108,13 +114,13 @@ export default function Overview() {
 								<div className="flex justify-between text-sm">
 									<span className="text-gray-600">Mode</span>
 									<span className="font-medium text-gray-900">
-										{upcomingJourney.line}
+										{profile.travel_mode}
 									</span>
 								</div>
 								<div className="flex justify-between text-sm">
-									<span className="text-gray-600">Bus #</span>
+									<span className="text-gray-600">Line Number</span>
 									<span className="font-medium text-gray-900">
-										{upcomingJourney.mode}
+										{upcomingJourney.line}
 									</span>
 								</div>
 								<div className="flex justify-between text-sm">
