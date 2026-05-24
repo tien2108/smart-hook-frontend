@@ -47,7 +47,7 @@ export default function Profile() {
 				}
 			const res = await apiFetch('/user', {
 				method: 'POST',
-				body: updates,
+				body: JSON.stringify(updates),
 			});
 
 			if (!res.ok) {
