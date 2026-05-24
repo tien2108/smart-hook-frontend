@@ -45,6 +45,7 @@ export default function Profile() {
 					departure_time: departureTime,
 					journey_notifications: journeyNotifications,
 				}
+				console.log('Saving user settings', updates);
 			const res = await apiFetch('/user', {
 				method: 'POST',
 				body: JSON.stringify(updates),
