@@ -28,6 +28,7 @@ export default function Profile() {
 			setTravelMode(user.travel_mode);
 			setDepartureTime(user.departure_time);
 			setJourneyNotifications(user.journey_notifications);
+			setWeatherAlerts(user.weather_alerts);
 		};
 
 		fetchProfile();
@@ -44,6 +45,7 @@ export default function Profile() {
 					travel_mode: travelMode,
 					departure_time: departureTime,
 					journey_notifications: journeyNotifications,
+					departure_time: departureTime,
 				}
 				console.log('Saving user settings', updates);
 			const res = await apiFetch('/user', {
