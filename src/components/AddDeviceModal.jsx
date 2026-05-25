@@ -6,6 +6,7 @@ export default function AddDeviceModal({ isOpen, onClose, onAdd }) {
 	const [deviceLocation, setDeviceLocation] = useState('');
 	const [destLocation, setDestLocation] = useState('');
 	const [UUID, setUUID] = useState('');
+	const [mode, setMode] = useState('');
 	const [step, setStep] = useState(1);
 
 	if (!isOpen) return null;
@@ -13,10 +14,11 @@ export default function AddDeviceModal({ isOpen, onClose, onAdd }) {
 	const handleSubmit = (e) => {
 		e.preventDefault();
 		if (name && deviceLocation && UUID) {
-			onAdd(name, UUID, deviceLocation);
+			onAdd(name, UUID, deviceLocation, mode);
 			setName('');
 			setDeviceLocation('');
 			setUUID('');
+			setMode('');
 			setStep(1);
 			onClose();
 		}
@@ -49,7 +51,6 @@ export default function AddDeviceModal({ isOpen, onClose, onAdd }) {
 								required
 							/>
 						</div>
-
 						<div>
 							<label className="block text-sm font-medium text-gray-700 mb-2">
 								UUID
@@ -63,7 +64,6 @@ export default function AddDeviceModal({ isOpen, onClose, onAdd }) {
 								required
 							/>
 						</div>
-
 						<div>
 							<label className="block text-sm font-medium text-gray-700 mb-2">
 								Device Location
@@ -76,6 +76,22 @@ export default function AddDeviceModal({ isOpen, onClose, onAdd }) {
 								className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
 								required
 							/>
+						</div>
+						<div>
+							<label className="block text-sm font-medium text-gray-700 mb-2">
+								Preferred Travel Mode
+							</label>
+							<select
+								value={mode}
+								onChange={(e) => setMode(e.target.value)}
+								className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none">
+								<option value="bus">Bus</option>
+								<option value="train">Train</option>
+								<option value="bus-train">Bus + Train</option>
+								<option value="walk">Walk</option>
+								<option value="bike">Bike</option>
+								<option value="drive">Drive</option>
+							</select>
 						</div>
 					</div>
 
