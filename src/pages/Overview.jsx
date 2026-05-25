@@ -118,7 +118,7 @@ export default function Overview() {
 									</span>
 								</div>
 								<div className="space-y-2">
-									{upcomingJourney.legs.map((leg, index) => (
+									{upcomingJourney.legs?.map((leg, index) => (
 										<div key={index} className="flex justify-between text-sm">
 											<span className="text-gray-600">
 												{leg.mode === 'WALK' ? 'Walk' : `${leg.mode} ${leg.line}`}
