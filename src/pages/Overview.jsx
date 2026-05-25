@@ -1,4 +1,17 @@
-import { Clock, MapPin, Zap, Star, Bus, CloudSun } from 'lucide-react';
+import {
+	Clock,
+	MapPin,
+	Zap,
+	Star,
+	Bus,
+	CloudSun,
+	Footprints,
+	Train,
+	TramFront,
+	Ship,
+	Bike,
+	Car,
+} from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { apiFetch } from '../lib/api';
 import WeatherDisplay from '../components/WeatherDisplay';
@@ -124,6 +137,19 @@ export default function Overview() {
 									</span>
 								</div>
 							</div>
+
+							{upcomingJourney.legs?.length > 0 && (
+								<div className="pt-4 mt-2 border-t border-gray-100">
+									<p className="text-sm font-semibold text-gray-700 mb-3">
+										Itinerary
+									</p>
+									<ol className="space-y-2">
+										{upcomingJourney.legs.map((leg, i) => (
+											<JourneyLeg key={i} leg={leg} />
+										))}
+									</ol>
+								</div>
+							)}
 						</div>
 					</div>
 				</div>
@@ -185,5 +211,39 @@ export default function Overview() {
 				</div>
 			</div>
 		</div>
+	);
+}
+
+const MODE_META = {
+	WALK: { Icon: Footprints, label: 'Walk' },
+	BUS: { Icon: Bus, label: 'bus' },
+	RAIL: { Icon: Train, label: 'train' },
+	SUBWAY: { Icon: Train, label: 'metro' },
+	TRAM: { Icon: TramFront, label: 'tram' },
+	FERRY: { Icon: Ship, label: 'ferry' },
+	BICYCLE: { Icon: Bike, label: 'bike' },
+	CAR: { Icon: Car, label: 'drive' },
+};
+
+function JourneyLeg({ leg }) {
+	const meta = MODE_META[leg.mode] || { Icon: MapPin, label: leg.mode };
+	const Icon = meta.Icon;
+	const dest = leg.to && leg.to !== 'Destination' ? leg.to : 'destination';
+
+	const description =
+		leg.mode === 'WALK'
+			? `Walk to ${dest}`
+			: `Take ${leg.line ? `${leg.line} ` : ''}${meta.label} to ${dest}`;
+
+	return (
+		<li className="flex items-start gap-3">
+			<Icon className="w-4 h-4 mt-0.5 text-blue-600 shrink-0" />
+			<div className="flex-1 text-sm">
+				<p className="text-gray-900">{description}</p>
+				{leg.durationMinutes > 0 && (
+					<p className="text-xs text-gray-500">{leg.durationMinutes} min</p>
+				)}
+			</div>
+		</li>
 	);
 }
