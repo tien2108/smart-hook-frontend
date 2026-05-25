@@ -26,7 +26,7 @@ export default function Profile() {
 			setName(user.name);
 			setHomeAddress(user.home_address);
 			setDestinationAddress(user.dest_address);
-			setTravelMode(user.travel_mode);
+			setTravelMode(user.travel_mode || 'bus-train-metro');
 			setDepartureTime(user.departure_time);
 			setJourneyNotifications(user.journey_notifications !== 0);
 			setNotificationMinutes(user.notify_minutes_before ?? 15);
@@ -203,6 +203,10 @@ export default function Profile() {
 								<option value="walk">Walk</option>
 								<option value="bike">Bike</option>
 								<option value="drive">Drive</option>
+								<option value="metro">Metro</option>
+								<option value="bus-metro">Bus + Metro</option>
+								<option value="train-metro">Train + Metro</option>
+								<option value="bus-train-metro">Bus + Train + Metro</option>
 							</select>
 						</div>
 
