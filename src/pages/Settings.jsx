@@ -14,6 +14,7 @@ export default function Profile() {
 	const [weatherAlerts, setWeatherAlerts] = useState(true);
 	const [meteorAlerts, setMeteorAlerts] = useState(true);
 	const [auroraAlerts, setAuroraAlerts] = useState(true);
+	const [notificationMinutes, setNotificationMinutes] = useState(15);
 	const [loading, setLoading] = useState(true);
 
 	const navigate = useNavigate();
@@ -28,6 +29,7 @@ export default function Profile() {
 			setTravelMode(user.travel_mode);
 			setDepartureTime(user.departure_time);
 			setJourneyNotifications(user.journey_notifications !== 0);
+			setNotificationMinutes(user.notify_minutes_before ?? 15);
 		};
 
 		fetchProfile();
@@ -37,16 +39,17 @@ export default function Profile() {
 	const handleSave = async () => {
 		try {
 			const updates = {
-					password,
-					name,
-					home_address: homeAddress,
-					work_address: destinationAddress,
-					travel_mode: travelMode,
-					departure_time: departureTime,
-					journey_notifications: journeyNotifications,
-					departure_time: departureTime,
-				}
-				console.log('Saving user settings', updates);
+				password,
+				name,
+				home_address: homeAddress,
+				work_address: destinationAddress,
+				travel_mode: travelMode,
+				departure_time: departureTime,
+				journey_notifications: journeyNotifications,
+				departure_time: departureTime,
+				notification_minutes: notificationMinutes,
+			};
+			console.log('Saving user settings', updates);
 			const res = await apiFetch('/user', {
 				method: 'POST',
 				body: JSON.stringify(updates),
@@ -77,7 +80,7 @@ export default function Profile() {
 			}
 
 			console.log('User deleted');
-			navigate('/login')
+			navigate('/login');
 		} catch (error) {
 			console.error('Error deleting user', error);
 		}
@@ -245,7 +248,27 @@ export default function Profile() {
 								<div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
 							</label>
 						</div>
-
+						{journeyNotifications && (
+							<div className="flex items-center justify-between p-4 bg-blue-50 rounded-lg">
+								<div>
+									<p className="font-medium text-gray-900">Notification Time</p>
+									<p className="text-sm text-gray-600">
+										How many minutes before departure to notify you
+									</p>
+								</div>
+								<input
+									type="number"
+									min="1"
+									max="120"
+									value={notificationMinutes}
+									onChange={(e) =>
+										setNotificationMinutes(Number(e.target.value))
+									}
+									className="w-20 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-center font-medium"
+								/>
+								<span className="text-sm text-gray-600 ml-[-8px]">min</span>
+							</div>
+						)}
 						<div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
 							<div>
 								<p className="font-medium text-gray-900">Weather Alerts</p>
