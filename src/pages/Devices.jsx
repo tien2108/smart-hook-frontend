@@ -22,10 +22,10 @@ export default function Devices() {
 	const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 	const [configDevice, setConfigDevice] = useState(null);
 
-	const handleAddDevice = async (name, uuid, deviceLocation) => {
+	const handleAddDevice = async (name, uuid, deviceLocation, mode) => {
 		const res = await apiFetch('/device/v1/add-device', {
 			method: 'POST',
-			body: JSON.stringify({ name, uuid, deviceLocation }),
+			body: JSON.stringify({ name, uuid, deviceLocation, preferMode: mode }),
 		});
 		if (res.ok) {
 			const newDevice = await res.json();

@@ -7,6 +7,7 @@ export default function ConfigurationPanel({ isOpen, onClose, device }) {
 	console.log('Configuring device:', device);
 	const [homeAddress, setHomeAddress] = useState(device.origin);
 	const [workAddress, setWorkAddress] = useState(device.dest);
+	const [preferMode, setPreferMode] = useState(device.preferMode || 'bus-train-metro');
 	const handleUpdateSettings = async () => {
 		// Implement API call to update device settings here
 		// get values from form inputs and send to backend
@@ -17,6 +18,7 @@ export default function ConfigurationPanel({ isOpen, onClose, device }) {
 				name: device.name,
 				deviceLocation: homeAddress,
 				destLocation: workAddress,
+				preferMode: preferMode,
 			}),
 		});
 		if (res.ok) {
@@ -69,6 +71,26 @@ export default function ConfigurationPanel({ isOpen, onClose, device }) {
 									onChange={(e) => setWorkAddress(e.target.value)}
 									className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
 								/>
+							</div>
+							<div>
+								<label className="block text-sm font-medium text-gray-700 mb-2">
+									Preferred Travel Mode
+								</label>
+								<select
+									value={preferMode}
+									onChange={(e) => setPreferMode(e.target.value)}
+									className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none">
+									<option value="bus-train-metro">Bus + Train + Metro</option>
+									<option value="bus">Bus</option>
+									<option value="train">Train</option>
+									<option value="bus-train">Bus + Train</option>
+									<option value="walk">Walk</option>
+									<option value="bike">Bike</option>
+									<option value="drive">Drive</option>
+									<option value="metro">Metro</option>
+									<option value="bus-metro">Bus + Metro</option>
+									<option value="train-metro">Train + Metro</option>
+								</select>
 							</div>
 						</div>
 					</div>
