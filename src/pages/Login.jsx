@@ -9,7 +9,6 @@ export default function Login() {
 	const [password, setPassword] = useState('');
 	const [error, setError] = useState('');
 	const [loading, setLoading] = useState(false);
-	const [showForgot, setShowForgot] = useState(false);
 
 	const [resetEmail, setResetEmail] = useState('');
 	const [resetStatus, setResetStatus] = useState('');
@@ -31,25 +30,6 @@ export default function Login() {
 		}
 	};
 
-	const handleResetPassword = async (e) => {
-		e.preventDefault();
-		setResetError('');
-		setResetLoading(true);
-		try {
-			const res = await fetch(`${process.env.VITE_API_URL}/api/auth/forgot-password`, {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ email: resetEmail }),
-			});
-			const data = await res.json();
-			if (!res.ok) throw new Error(data.message || 'Request failed');
-			setResetStatus('sent');
-		} catch (err) {
-			setResetError(err.message);
-		} finally {
-			setResetLoading(false);
-		}
-	};
 
 	return (
 		<div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
@@ -97,41 +77,6 @@ export default function Login() {
 					</div>
 				</form>
 
-				{showForgot && (
-					<div className="mt-4 pt-4 border-t">
-						{resetStatus === 'sent' ? (
-							<p className="text-sm text-green-600">
-								Check your inbox — we sent a reset link to{' '}
-								<strong>{resetEmail}</strong>.
-							</p>
-						) : (
-							<>
-								<p className="text-sm text-gray-500 mb-2">
-									Forgot your password?
-								</p>
-								<form onSubmit={handleResetPassword} className="flex gap-2">
-									<input
-										value={resetEmail}
-										onChange={(e) => setResetEmail(e.target.value)}
-										type="email"
-										placeholder="Your email"
-										required
-										className="flex-1 border p-2 rounded text-sm"
-									/>
-									<button
-										type="submit"
-										disabled={resetLoading}
-										className="px-3 py-2 bg-gray-700 text-white text-sm rounded disabled:opacity-50">
-										{resetLoading ? 'Sending...' : 'Send reset link'}
-									</button>
-								</form>
-								{resetError && (
-									<p className="text-red-500 text-xs mt-1">{resetError}</p>
-								)}
-							</>
-						)}
-					</div>
-				)}
 			</div>
 		</div>
 	);
