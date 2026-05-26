@@ -76,6 +76,14 @@ export default function Login() {
 
 					{error && <p className="text-red-500 text-sm">{error}</p>}
 
+					<div className="text-right">
+						<Link
+							to="/forgot-password"
+							className="text-sm text-blue-600 hover:underline">
+							Forgot password?
+						</Link>
+					</div>
+
 					<div className="flex justify-end gap-2">
 						<Link to="/register" className="px-4 py-2 bg-gray-300 rounded">
 							Register

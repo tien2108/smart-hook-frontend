@@ -10,12 +10,14 @@ export default function Profile() {
 	const [destinationAddress, setDestinationAddress] = useState('');
 	const [travelMode, setTravelMode] = useState('bus');
 	const [departureTime, setDepartureTime] = useState('08:15');
-	const [journeyNotifications, setJourneyNotifications] = useState(true);
+	const [journeyNotifications, setJourneyNotifications] = useState(false);
+	const [notifyMinutesBefore, setNotifyMinutesBefore] = useState(15);
 	const [weatherAlerts, setWeatherAlerts] = useState(true);
 	const [meteorAlerts, setMeteorAlerts] = useState(true);
 	const [auroraAlerts, setAuroraAlerts] = useState(true);
 	const [notificationMinutes, setNotificationMinutes] = useState(15);
 	const [loading, setLoading] = useState(true);
+	const [notifySaveStatus, setNotifySaveStatus] = useState('');
 
 	const navigate = useNavigate();
 
@@ -32,9 +34,65 @@ export default function Profile() {
 			setNotificationMinutes(user.notify_minutes_before ?? 15);
 		};
 
+		const fetchNotificationPrefs = async () => {
+			try {
+				const res = await apiFetch('/notifications/preferences');
+				if (!res.ok) return;
+				const prefs = await res.json();
+				setJourneyNotifications(!!prefs.notify_enabled);
+				setNotifyMinutesBefore(prefs.notify_minutes_before ?? 15);
+			} catch (err) {
+				console.error('Failed to load notification preferences', err);
+			}
+		};
+
+		const fetchJourneyPrefs = async () => {
+			try {
+				const res = await apiFetch('/auth/me');
+				if (!res.ok) return;
+				const me = await res.json();
+				if (me.departure_time) setDepartureTime(me.departure_time);
+				if (me.travel_mode) setTravelMode(me.travel_mode);
+			} catch (err) {
+				console.error('Failed to load journey preferences', err);
+			}
+		};
+
 		fetchProfile();
+		fetchNotificationPrefs();
+		fetchJourneyPrefs();
 		setLoading(false);
 	}, [loading]);
+
+	const saveNotificationPrefs = async (overrides = {}) => {
+		const body = {
+			notify_enabled:
+				overrides.notify_enabled !== undefined
+					? overrides.notify_enabled
+					: journeyNotifications,
+			notify_minutes_before:
+				overrides.notify_minutes_before !== undefined
+					? overrides.notify_minutes_before
+					: notifyMinutesBefore,
+		};
+		setNotifySaveStatus('Saving...');
+		try {
+			const res = await apiFetch('/notifications/preferences', {
+				method: 'PATCH',
+				body: JSON.stringify(body),
+			});
+			if (!res.ok) {
+				const err = await res.json().catch(() => ({}));
+				setNotifySaveStatus(err.error || 'Failed to save');
+				return;
+			}
+			setNotifySaveStatus('Saved');
+			setTimeout(() => setNotifySaveStatus(''), 1500);
+		} catch (err) {
+			console.error('Error saving notification preferences', err);
+			setNotifySaveStatus('Failed to save');
+		}
+	};
 
 	const handleSave = async () => {
 		try {
@@ -57,10 +115,22 @@ export default function Profile() {
 
 			if (!res.ok) {
 				console.error('Failed to save user settings', res.status);
-				return;
+			} else {
+				console.log('User settings saved');
 			}
 
-			console.log('User settings saved');
+			const journeyRes = await apiFetch('/auth/me', {
+				method: 'PATCH',
+				body: JSON.stringify({
+					departure_time: departureTime,
+					travel_mode: travelMode,
+				}),
+			});
+			if (!journeyRes.ok) {
+				const err = await journeyRes.json().catch(() => ({}));
+				console.error('Failed to save journey preferences', err);
+			}
+
 			setLoading(true);
 		} catch (error) {
 			console.error('Error saving user settings', error);
@@ -239,14 +309,18 @@ export default function Profile() {
 									Journey Notifications
 								</p>
 								<p className="text-sm text-gray-600">
-									Get alerts about your daily commute
+									Email me before I need to leave for the bus/metro
 								</p>
 							</div>
 							<label className="relative inline-flex items-center cursor-pointer">
 								<input
 									type="checkbox"
 									checked={journeyNotifications}
-									onChange={(e) => setJourneyNotifications(e.target.checked)}
+									onChange={(e) => {
+										const next = e.target.checked;
+										setJourneyNotifications(next);
+										saveNotificationPrefs({ notify_enabled: next });
+									}}
 									className="sr-only peer"
 								/>
 								<div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>

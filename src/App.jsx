@@ -3,7 +3,15 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 
 import { AuthLayout, DashboardLayout } from './layouts'
 import PrivateRoute from './components/PrivateRoute'
-import { Login, Register, Overview, Devices, Settings, ResetPassword } from './pages'
+import {
+  Login,
+  Register,
+  ForgotPassword,
+  ResetPassword,
+  Overview,
+  Devices,
+  Settings,
+} from './pages'
 
 export default function App() {
   return (
@@ -14,6 +22,7 @@ export default function App() {
         <Route element={<AuthLayout />}>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
         </Route>
 
